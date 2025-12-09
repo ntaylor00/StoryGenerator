@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
-import ./model/APIClient.java;
+//import model.APIClient.java;
+import model.*;
 
 class Main {
     public static void main(String[] args) {
@@ -11,7 +12,7 @@ class Main {
         System.out.println("What genre of story would you like?");
         genre = scan.nextLine();
 
-        System.out.println("Give a brief descrption for the main character" +
+        System.out.println("Give a brief description for the main character" +
                             "(for example, \"A pirate wearing a fedora\"): ");
         main_character = scan.nextLine();
 
