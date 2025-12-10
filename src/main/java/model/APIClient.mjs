@@ -1,7 +1,11 @@
 import OpenAI from "openai";
-        const client = new OpenAI();
+const client = new OpenAI();
 
-tools = [
+const response = await client.response.create({
+    model: "gpt-5-nano",
+    input: 
+     })
+/*tools = [
     {
         "type": "function",
         "name": "generate_story",
@@ -25,7 +29,7 @@ tools = [
     },
 ]
 
-def generate_story(genre, main_character):
+/*def generate_story(genre, main_character):
     user_input = [
         {"genre": genre, "main_character": main_character}
     ]
@@ -33,9 +37,9 @@ def generate_story(genre, main_character):
 response = client.responses.create(
     model="gpt-5-nano",
     tools-tools,
-    input=user_input,
+    input="Write a one-sentence bedtime story about a unicorn.",//user_input,
 )
-/*const response = await client.response.create({
+const response = await client.response.create({
     model: "gpt-5-nano",
 
     prompt: {
