@@ -1,4 +1,4 @@
-/*package model;
+package model;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -7,15 +7,29 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.Response;
+import com.openai.models.responses.ResponseCreateParams;
+
 public class APIClient {
+    //OpenAIClient client = OpenAIOkHttpClient.fromEnv();
     private static final String API_URL = "https://api.openai.com/v1/completions";
-    private String apiKey;
+    //private String apiKey;
+    private static APIClient apiClient;
 
-    public APIClient(String apiKey) {
+    /*public APIClient(String apiKey) {
         this.apiKey = apiKey;
-    }
+    }*/
 
-    public String generateCompletion(String prompt) throws Exception {
+    /*public static APIClient createAPI() {
+        if (apiClient == null) {
+            apiClient = new APIClient(apiKey);
+        }
+        return apiClient;
+    }*/
+
+    /*public String generateCompletion(String prompt) throws Exception {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(API_URL);
             post.setHeader("Authorization", "Bearer " + apiKey);
@@ -25,6 +39,30 @@ public class APIClient {
             try (CloseableHttpResponse response = httpClient.execute(post)) {
                 return EntityUtils.toString(response.getEntity());
             }
+            catch (Exception e) {
+                System.err.println(e);
+            }
         }
+        catch (Exception e) {
+            System.err.println(e);
+        }
+        return "";
+    }*/
+
+    public void generateStory(String inputString) {
+        OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+        /*OpenAIClient client = OpenAIOkHttpClient.builder()
+                .apiKey(storyGen.apiKey)
+                .build();*/
+
+
+        ResponseCreateParams params = ResponseCreateParams.builder()
+                .input("Write a one sentence story given the following prompt: " + inputString) //FIXME
+                .model("gpt-5")
+                .build();
+
+        Response response = client.responses().create(params);
+        System.out.println("TEST: " + response);
+        //return response;//.outputText();
     }
-}*/
+}

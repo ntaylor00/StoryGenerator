@@ -8,6 +8,10 @@ import com.openai.models.responses.ResponseCreateParams;
 public class Main {
     public static void main(String[] args) {
         OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+        /*OpenAIClient client = OpenAIOkHttpClient.builder()
+                .apiKey("YOUR_API_KEY_HERE")
+                .build();*/
+
 
         ResponseCreateParams params = ResponseCreateParams.builder()
                 .input("Say this is a test")
@@ -15,7 +19,7 @@ public class Main {
                 .build();
 
         Response response = client.responses().create(params);
-        System.out.println(response.outputText());
+        //System.out.println(response.outputText());
     }
 }
 
