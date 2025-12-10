@@ -63,19 +63,23 @@ public class StoryGeneratorApp extends Application {
         generateStory.setOnAction( e ->
         {
             String inputString = storyPrompt.getText();
-            promptResponse.appendText("\n");
-            promptResponse.appendText(inputString);
+            String apiResponse = "";
+            //promptResponse.appendText("\n");
+            //promptResponse.appendText(inputString);
             storyPrompt.clear();
             //placeHolder();
             //We would use inputString to generate the request.
-            promptResponse.appendText("\n");
+            //promptResponse.appendText("\n");
             try {
                 //storyGen.generateCompletion(inputString);
-                storyGen.generateStory(inputString);
+                apiResponse = storyGen.generateStory(inputString);
             }
             catch (Exception exc) {
                 System.err.println(exc);
             }
+            promptResponse.appendText("Your story:\n ");
+            promptResponse.appendText(apiResponse);
+            promptResponse.appendText("\n");
         } );
 
         edit.setOnAction( e ->
