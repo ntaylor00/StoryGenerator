@@ -105,7 +105,7 @@ public class APIClient {
             if (prompt.length() > 4000) { throw new RuntimeException("Too many Characters, try a smaller prompt!");}
             ImageGenerateParams params = ImageGenerateParams.builder().prompt("Create an image in the" + genre +
                             " genre given the following prompt: " + prompt)
-                    .model(ImageModel.DALL_E_2)
+                    .model(ImageModel.DALL_E_3)
                     //.quality(ImageGenerateParams.Quality.HD)
                     //.style(ImageGenerateParams.Style.NATURAL)
                     .build();
