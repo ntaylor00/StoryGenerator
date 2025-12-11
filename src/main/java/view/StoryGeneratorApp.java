@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -28,6 +30,7 @@ public class StoryGeneratorApp extends Application {
         Button reGen = new Button("Regenerate");
         Button restart = new Button("Restart");
         Button txtAdv = new Button("Text Adventure");
+        Button image = new Button("Image Generation");
 
         TextArea storyPrompt = new TextArea();
         storyPrompt.setWrapText(true);
@@ -58,7 +61,7 @@ public class StoryGeneratorApp extends Application {
         promptInput.alignmentProperty().setValue(Pos.CENTER);
         HBox otherInput = new HBox(10, storyGenre, storyLength);
         otherInput.alignmentProperty().setValue(Pos.CENTER);
-        HBox buttonsRow = new HBox(10, generateStory, reGen, restart, txtAdv);
+        HBox buttonsRow = new HBox(10, generateStory, reGen, restart, txtAdv, image);
         buttonsRow.alignmentProperty().setValue(Pos.CENTER);
         VBox input = new VBox(10, otherInput, promptInput, buttonsRow);
 
@@ -186,9 +189,47 @@ public class StoryGeneratorApp extends Application {
             storyLength.clear();
         } );
 
+        image.setOnAction(e ->
+        {
+            double h = 650; //genImage.getHeight();
+            double w = 600; //genImage.getWidth();
+            String prompt = storyPrompt.getText();
+            String genre = storyGenre.getText();
+            String URL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBgzTBW173XjkpEZZXs0MwFZidBQAKlGevEg&s";
+            try
+            {
+                URL = storyGen.genImage(prompt, genre, h, w);
+            }
+            catch (Exception exc)
+            {
+                System.err.println(exc);
+            }
+            if(URL.isEmpty())
+            {
+                System.err.println("Empty prompt, whoopsie!");
+            }
+
+            try
+            {
+                Image genImage = new Image(URL.toString());
+                ImageView imageView = new ImageView(genImage);
+                imageView.setFitHeight(h);
+                imageView.setFitWidth(w);
+                imageView.setPreserveRatio(true);
+                HBox hBox = new HBox(imageView);
+                hBox.alignmentProperty().setValue(Pos.CENTER);
+                imageGen(hBox, h, w);
+            }
+            catch(Exception exception)
+            {
+                System.err.println("Invalid URL generated, sorry!");
+            }
+        });
+
         stage.show();
     }
 
+    //Used to display to the user the incompleteness of our program.
     public static void placeHolder()
     {
         Stage popUp = new Stage();
@@ -205,6 +246,27 @@ public class StoryGeneratorApp extends Application {
         popUp.setMaxHeight(100);
         popUp.setMaxWidth(300);
         popUp.showAndWait();
+    }
+
+    public static void imageGen(HBox hBox, double h, double w)
+    {
+        Stage imgWindow = new Stage();
+        imgWindow.setTitle("Image Generated: ");
+        //Label message = new Label("Image goes here");
+        Button close = new Button("  Exit  ");
+        close.setOnAction(e -> { imgWindow.close(); });
+
+
+        VBox popRoot = new VBox(10, hBox, close);
+        popRoot.alignmentProperty().setValue(Pos.CENTER);
+        Scene scene = new Scene(popRoot, w + 25, h + 100);
+        imgWindow.setScene(scene);
+        imgWindow.initModality(Modality.APPLICATION_MODAL);
+        imgWindow.setMinHeight(h + 100);
+        imgWindow.setMinWidth(w + 25);
+        imgWindow.setMaxHeight(h + 100);
+        imgWindow.setMaxWidth(w + 25);
+        imgWindow.showAndWait();
     }
 
     public static void main(String[] args) {

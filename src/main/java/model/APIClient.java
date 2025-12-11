@@ -1,13 +1,17 @@
 package model;
 
+import com.openai.models.images.Image;
+import com.openai.models.images.ImageGenerateParams;
+import com.openai.models.images.ImageModel;
 import com.openai.models.responses.ResponseOutputText;
+/*
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-
+*/
 import java.util.stream.Collectors;
 import com.openai.models.responses.ResponseOutputItem;
 import com.openai.models.responses.ResponseOutputMessage;
@@ -89,5 +93,33 @@ public class APIClient {
                 .collect(Collectors.joining("\n"));
 
         return story;
+    }
+
+    public String genImage(String prompt, String genre, double h, double w)
+    {
+        OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+        String rtrn = "";
+        if(prompt != null && genre != null && !prompt.isEmpty())
+        {
+            //Building request
+            if (prompt.length() > 4000) { throw new RuntimeException("Too many Characters, try a smaller prompt!");}
+            ImageGenerateParams params = ImageGenerateParams.builder().prompt("Create an image in the" + genre +
+                            " genre given the following prompt: " + prompt)
+                    .model(ImageModel.DALL_E_2)
+                    //.quality(ImageGenerateParams.Quality.HD)
+                    //.style(ImageGenerateParams.Style.NATURAL)
+                    .build();
+            //Generating image
+            var imageResponse = client.images().generate(params);
+
+            //Gathering URL
+            rtrn = imageResponse.data()
+                    .orElseThrow(() -> new RuntimeException("No image data returned"))
+                    .stream()
+                    .findFirst()
+                    .flatMap(Image::url)
+                    .orElseThrow(() -> new RuntimeException("No URL returned for generated image"));
+        }
+        return rtrn;
     }
 }
