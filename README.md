@@ -12,6 +12,7 @@
 - [x] Option to regenerate / generate new story
 - [x] Clear / start over
 - [x] Text Adventure mode
+
 Bonus Feature:
 - [x] Optional Image Generation
 
