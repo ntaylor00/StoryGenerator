@@ -19,51 +19,27 @@ import com.openai.models.responses.Response;
 import com.openai.models.responses.ResponseCreateParams;
 
 public class APIClient {
-    //OpenAIClient client = OpenAIOkHttpClient.fromEnv();
     private static final String API_URL = "https://api.openai.com/v1/completions";
-    //private String apiKey;
     private static APIClient apiClient;
 
-    /*public APIClient(String apiKey) {
-        this.apiKey = apiKey;
-    }*/
-
-    /*public static APIClient createAPI() {
-        if (apiClient == null) {
-            apiClient = new APIClient(apiKey);
-        }
-        return apiClient;
-    }*/
-
-    /*public String generateCompletion(String prompt) throws Exception {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpPost post = new HttpPost(API_URL);
-            post.setHeader("Authorization", "Bearer " + apiKey);
-            post.setHeader("Content-Type", "application/json");
-            String json = String.format("{\"prompt\": \"%s\", \"max_tokens\": 50}", prompt);
-            post.setEntity(new StringEntity(json));
-            try (CloseableHttpResponse response = httpClient.execute(post)) {
-                return EntityUtils.toString(response.getEntity());
-            }
-            catch (Exception e) {
-                System.err.println(e);
-            }
-        }
-        catch (Exception e) {
-            System.err.println(e);
-        }
-        return "";
-    }*/
-
-    public String generateStory(String inputString) {
+    public String generateStory(String prompt, String genre, String length) {
         OpenAIClient client = OpenAIOkHttpClient.fromEnv();
-        /*OpenAIClient client = OpenAIOkHttpClient.builder()
-                .apiKey(System.getenv("OPENAI_API_KEY"))
-                .build();*/
+
+        // Set default story specifications
+        if (prompt.isEmpty()) {
+            prompt = "An adventure story";
+        }
+        if (genre.isEmpty()) {
+            genre = "fantasy";
+        }
+        if (length.isEmpty()) {
+            length = "short paragraph";
+        }
 
 
         ResponseCreateParams params = ResponseCreateParams.builder()
-                .input("Write a one sentence story given the following prompt: " + inputString) //FIXME
+                .input("Write a story of length " + length + " and genre "
+                        + genre + " given the following prompt: " + prompt)
                 .model(ChatModel.GPT_4_1_MINI)
                 .maxOutputTokens(200L)
                 .build();
@@ -87,6 +63,8 @@ public class APIClient {
         return story;
     }
 
-
-
+    public String editStory(String story) {
+        //
+        return "";
+    }
 }

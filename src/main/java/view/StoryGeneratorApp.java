@@ -34,18 +34,32 @@ public class StoryGeneratorApp extends Application {
         storyPrompt.setPrefRowCount(4);
         storyPrompt.setPromptText("Enter your story prompt...");
 
+        TextArea storyGenre = new TextArea();
+        storyGenre.setWrapText(true);
+        storyGenre.setPrefColumnCount(15);
+        storyGenre.setPrefRowCount(2);
+        storyGenre.setPromptText("Choose a genre...");
+
+        TextArea storyLength = new TextArea();
+        storyLength.setWrapText(true);
+        storyLength.setPrefColumnCount(41);
+        storyLength.setPrefRowCount(2);
+        storyLength.setPromptText("How long shall your story be?"); //FIXME add max length?
+
         TextArea promptResponse = new TextArea();
         promptResponse.setEditable(false);
         promptResponse.setWrapText(true);
         promptResponse.setPrefColumnCount(60);
-        promptResponse.setPrefRowCount(23);
+        promptResponse.setPrefRowCount(20);
         promptResponse.setPromptText("Your story goes here...");
 
-        HBox userInput = new HBox(10, storyPrompt);
-        userInput.alignmentProperty().setValue(Pos.CENTER);
+        HBox promptInput = new HBox(10, storyPrompt);
+        promptInput.alignmentProperty().setValue(Pos.CENTER);
+        HBox otherInput = new HBox(10, storyGenre, storyLength);
+        otherInput.alignmentProperty().setValue(Pos.CENTER);
         HBox buttonsRow = new HBox(10, generateStory, reGen, edit, restart);
         buttonsRow.alignmentProperty().setValue(Pos.CENTER);
-        VBox input = new VBox(10, userInput, buttonsRow);
+        VBox input = new VBox(10, otherInput, promptInput, buttonsRow);
 
         HBox output = new HBox(10, promptResponse);
         output.alignmentProperty().setValue(Pos.CENTER);
@@ -62,43 +76,84 @@ public class StoryGeneratorApp extends Application {
         //Wiring
         generateStory.setOnAction( e ->
         {
-            String inputString = storyPrompt.getText();
+            String prompt = storyPrompt.getText();
+            String genre = storyGenre.getText();
+            String length = storyLength.getText();
             String apiResponse = "";
-            //promptResponse.appendText("\n");
-            //promptResponse.appendText(inputString);
-            storyPrompt.clear();
-            //placeHolder();
-            //We would use inputString to generate the request.
-            //promptResponse.appendText("\n");
+
+            /*storyPrompt.clear();
+            storyGenre.clear();
+            storyLength.clear();*/
+
             try {
-                //storyGen.generateCompletion(inputString);
-                apiResponse = storyGen.generateStory(inputString);
+                apiResponse = storyGen.generateStory(prompt, genre, length);
             }
             catch (Exception exc) {
                 System.err.println(exc);
             }
-            promptResponse.appendText("Your story:\n ");
+            promptResponse.appendText("-- Your Story: --\n ");
             promptResponse.appendText(apiResponse);
             promptResponse.appendText("\n");
         } );
 
-        edit.setOnAction( e ->
+        edit.setOnAction( e -> //FIXME
         {
-            //Maybe we hold the previous response as a string so we can manipulate it here?
             placeHolder();
+            /* --- EDIT LLM INPUT ---
+            1. If editable == false:
+                - set editable = true
+                - Instruct user to click 'edit' button when finished
+                - allow user to edit
+            2. If editable == true:
+                - set editable = false
+                - send user edits to LLM
+             */
+            /*promptResponse.setEditable(true);
+            String storyEdits = promptResponse.getText();
+            String apiResponse = "";
+
+            try {
+                apiResponse = storyGen.editStory(storyEdits);
+            }
+            catch (Exception exc) {
+                System.err.println(exc);
+            }*/
+
+
+            //Maybe we hold the previous response as a string so we can manipulate it here?
+            //placeHolder();
             //Should allow the user to edit the last input from the LLM
             //Update the LLM of these changes, and allow the user to respond after.
         } );
 
-        reGen.setOnAction( e ->
+        reGen.setOnAction( e -> //FIXME
         {
-            placeHolder();
+            //placeHolder();
+            String prompt = storyPrompt.getText();
+            String genre = storyGenre.getText();
+            String length = storyLength.getText();
+            String apiResponse = "";
+
+            try {
+                apiResponse = storyGen.generateStory(prompt, genre, length);
+            }
+            catch (Exception exc) {
+                System.err.println(exc);
+            }
+            promptResponse.appendText("-- Your New Story: --\n ");
+            promptResponse.appendText(apiResponse);
+            promptResponse.appendText("\n");
+
             //Should prompt the LLM to try generating a prompt again.
         } );
 
-        restart.setOnAction( e ->
+        restart.setOnAction( e -> //FIXME
         {
             promptResponse.clear();
+
+            storyPrompt.clear();
+            storyGenre.clear();
+            storyLength.clear();
             placeHolder();
             //We would need this to tell the LLM to disregard all previous text/open up a new chat
         } );
