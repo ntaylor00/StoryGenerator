@@ -63,8 +63,31 @@ public class APIClient {
         return story;
     }
 
-    public String editStory(String story) {
-        //
-        return "";
+    public String textAdventure(String storyEdits) {
+        OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+
+        ResponseCreateParams params = ResponseCreateParams.builder()
+                .input("Respond to the following prompt as if it were a Text Adventure Game " + storyEdits)
+                .model(ChatModel.GPT_4_1_MINI)
+                .maxOutputTokens(200L)
+                .build();
+
+        Response response = client.responses().create(params);
+
+        // Check for API error
+        if (response.error().isPresent()) {
+            throw new RuntimeException("OpenAI error: " + response.error().get());
+        }
+
+        // Extract story text from response
+        String story = response.output().stream()
+                .filter(ResponseOutputItem::isMessage)
+                .map(ResponseOutputItem::asMessage)
+                .flatMap((ResponseOutputMessage msg) -> msg.content().stream())
+                .flatMap(content -> content.outputText().stream())
+                .map(ResponseOutputText::text)
+                .collect(Collectors.joining("\n"));
+
+        return story;
     }
 }

@@ -24,9 +24,10 @@ public class StoryGeneratorApp extends Application {
         stage.setTitle("Story Generator");
 
         Button generateStory = new Button("Generate");
-        Button edit = new Button("Edit");
+        //Button edit = new Button("Edit");
         Button reGen = new Button("Regenerate");
         Button restart = new Button("Restart");
+        Button txtAdv = new Button("Text Adventure");
 
         TextArea storyPrompt = new TextArea();
         storyPrompt.setWrapText(true);
@@ -57,7 +58,7 @@ public class StoryGeneratorApp extends Application {
         promptInput.alignmentProperty().setValue(Pos.CENTER);
         HBox otherInput = new HBox(10, storyGenre, storyLength);
         otherInput.alignmentProperty().setValue(Pos.CENTER);
-        HBox buttonsRow = new HBox(10, generateStory, reGen, edit, restart);
+        HBox buttonsRow = new HBox(10, generateStory, reGen, restart, txtAdv);
         buttonsRow.alignmentProperty().setValue(Pos.CENTER);
         VBox input = new VBox(10, otherInput, promptInput, buttonsRow);
 
@@ -76,86 +77,113 @@ public class StoryGeneratorApp extends Application {
         //Wiring
         generateStory.setOnAction( e ->
         {
-            String prompt = storyPrompt.getText();
-            String genre = storyGenre.getText();
-            String length = storyLength.getText();
-            String apiResponse = "";
+            // If in regular mode
+            if (storyLength.isEditable()) {
+                String prompt = storyPrompt.getText();
+                String genre = storyGenre.getText();
+                String length = storyLength.getText();
+                String apiResponse = "";
 
-            /*storyPrompt.clear();
-            storyGenre.clear();
-            storyLength.clear();*/
+                try {
+                    apiResponse = storyGen.generateStory(prompt, genre, length);
+                }
+                catch (Exception exc) {
+                    System.err.println(exc);
+                }
+                promptResponse.appendText("-- Your Story: --\n ");
+                promptResponse.appendText(apiResponse);
+                promptResponse.appendText("\n");
+            }
 
-            try {
-                apiResponse = storyGen.generateStory(prompt, genre, length);
+            // If in Text Adventure Mode
+            else if (!storyLength.isEditable()) {
+                String prompt = storyPrompt.getText();
+                String apiResponse = "";
+                try {
+                    apiResponse = storyGen.textAdventure(prompt);
+                }
+                catch (Exception exc) {
+                    System.err.println(exc);
+                }
+
+                promptResponse.appendText(apiResponse);
+                promptResponse.appendText("\n\n");
+                storyPrompt.clear();
             }
-            catch (Exception exc) {
-                System.err.println(exc);
-            }
-            promptResponse.appendText("-- Your Story: --\n ");
-            promptResponse.appendText(apiResponse);
-            promptResponse.appendText("\n");
         } );
 
-        edit.setOnAction( e -> //FIXME
-        {
-            placeHolder();
-            /* --- EDIT LLM INPUT ---
-            1. If editable == false:
-                - set editable = true
-                - Instruct user to click 'edit' button when finished
-                - allow user to edit
-            2. If editable == true:
-                - set editable = false
-                - send user edits to LLM
-             */
-            /*promptResponse.setEditable(true);
-            String storyEdits = promptResponse.getText();
-            String apiResponse = "";
-
-            try {
-                apiResponse = storyGen.editStory(storyEdits);
-            }
-            catch (Exception exc) {
-                System.err.println(exc);
-            }*/
-
-
-            //Maybe we hold the previous response as a string so we can manipulate it here?
-            //placeHolder();
-            //Should allow the user to edit the last input from the LLM
-            //Update the LLM of these changes, and allow the user to respond after.
-        } );
-
-        reGen.setOnAction( e -> //FIXME
-        {
-            //placeHolder();
-            String prompt = storyPrompt.getText();
-            String genre = storyGenre.getText();
-            String length = storyLength.getText();
-            String apiResponse = "";
-
-            try {
-                apiResponse = storyGen.generateStory(prompt, genre, length);
-            }
-            catch (Exception exc) {
-                System.err.println(exc);
-            }
-            promptResponse.appendText("-- Your New Story: --\n ");
-            promptResponse.appendText(apiResponse);
-            promptResponse.appendText("\n");
-
-            //Should prompt the LLM to try generating a prompt again.
-        } );
-
-        restart.setOnAction( e -> //FIXME
+        txtAdv.setOnAction( e ->
         {
             promptResponse.clear();
 
+            // If entering Text Adventure Mode:
+            if (storyLength.isEditable()) {
+                promptResponse.appendText("-- Text Adventure Mode --" +
+                        "\n(Click \"Text Adventure\" button again to exit Text Adventure Mode)\n\n");
+                storyLength.setEditable(false);
+
+                String prompt = "Give a two sentence introduction to a text adventure game.";
+                String apiResponse = "";
+                try {
+                    apiResponse = storyGen.textAdventure(prompt);
+                }
+                catch (Exception exc) {
+                    System.err.println(exc);
+                }
+
+                promptResponse.appendText(apiResponse);
+                promptResponse.appendText("\n\n");
+                storyPrompt.clear();
+            }
+            // If exiting Text Adventure Mode:
+            else if (!storyLength.isEditable()) {
+                storyLength.setEditable(true);
+            }
+        } );
+
+        reGen.setOnAction( e ->
+        {
+            // If in regular mode
+            if (storyLength.isEditable()) {
+                String prompt = storyPrompt.getText();
+                String genre = storyGenre.getText();
+                String length = storyLength.getText();
+                String apiResponse = "";
+
+                try {
+                    apiResponse = storyGen.generateStory(prompt, genre, length);
+                }
+                catch (Exception exc) {
+                    System.err.println(exc);
+                }
+                promptResponse.appendText("-- Your New Story: --\n ");
+                promptResponse.appendText(apiResponse);
+                promptResponse.appendText("\n");
+            }
+
+            // If in Text Adventure Mode
+            else if (!storyLength.isEditable()) {
+                String prompt = storyPrompt.getText();
+                String apiResponse = "";
+                try {
+                    apiResponse = storyGen.textAdventure(prompt);
+                }
+                catch (Exception exc) {
+                    System.err.println(exc);
+                }
+
+                promptResponse.appendText(apiResponse);
+                promptResponse.appendText("\n\n");
+                storyPrompt.clear();
+            }
+        } );
+
+        restart.setOnAction( e ->
+        {
+            promptResponse.clear();
             storyPrompt.clear();
             storyGenre.clear();
             storyLength.clear();
-            placeHolder();
-            //We would need this to tell the LLM to disregard all previous text/open up a new chat
         } );
 
         stage.show();
