@@ -1,14 +1,14 @@
-** Challenges & Fixes:
+## Challenges & Fixes:
 1. Credentials Issues - We had some issues with the API key not being found / recognized. The solution was to add the API Key environment variable to the run configurations in IntelliJ.
 3. No Output - 
 
-** Design Pattern Justification:
+## Design Pattern Justification:
 (why each pattern fits)
 
-** OOP Four Pillars
+## OOP Four Pillars
 (where & why in your codebase)
 
-** AI Usage:
+## AI Usage:
 - Credentials issues:
     - Asked: Uploaded code snippets and asked about the cause of the credentials-related error messages and how to fix them.
     - Modifications: Add environment variable with API key to the run configurations.
