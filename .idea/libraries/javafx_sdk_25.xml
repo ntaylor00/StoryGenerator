@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="javafx-sdk-25">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/Documents/dev/javafx-sdk-25" />
+    </SOURCES>
+    <jarDirectory url="file://$USER_HOME$/Documents/dev/javafx-sdk-25" recursive="false" type="SOURCES" />
+  </library>
+</component>
