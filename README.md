@@ -10,11 +10,13 @@
 - [x] Story generation given a user-entered prompt, genre, and story length.
 - [x] Default prompt, genre, and/or story length if left blank
 - [x] Option to regenerate / generate new story
-- [X] Clear / start over
+- [x] Clear / start over
 - [x] Text Adventure mode
+- [x] Optional Image Generation
 
 (Work In Progress):
 - [ ] Edit generated story
+- [ ] More robust memory retention
 
 ## Design Patterns
 - Strategy: Different generation modes
