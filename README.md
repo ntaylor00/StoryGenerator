@@ -10,9 +10,9 @@
 - [x] Default prompt, genre, and/or story length if left blank
 - [x] Option to regenerate / generate new story
 - [X] Clear / start over
-(Work in Progress):
+- [x] Text Adventure mode
+(Work In Progress):
 - [ ] Edit generated story
-- [ ] Text Adventure mode
 
 ## Design Patterns
 - Strategy: Different generation modes
