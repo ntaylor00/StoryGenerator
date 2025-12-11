@@ -11,6 +11,7 @@
 - [x] Option to regenerate / generate new story
 - [X] Clear / start over
 - [x] Text Adventure mode
+
 (Work In Progress):
 - [ ] Edit generated story
 
