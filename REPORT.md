@@ -16,7 +16,7 @@
    - I had to implement the pop-up as a seperate method within StoryGeneratorApp.java to not have e defined twice within the same scope, but still alow for the pop-up-window to have functioning buttons
 
 ## Design Pattern Justification:
-(why each pattern fits)
+The pattern is simple: Gather user input, use user intput to generate a request, collect results of that request, and output the results to the user. This can be utalized for just about any API for any purpose, whether it's an image generator, music reccomendor, or programming assistant. Foretunately we don't have to concern ourselves too heavily about how or why the API methods/objects do what they do, our only concern is how to prompt it and how to gather the information correctly. I belive the generation/construction of requests would be considered a "factory" feature.
 
 ## OOP Four Pillars
 1. Inheritance: There are not many uses of inheritance within our program. Mostly code-reuse, though it is possible methods such as generateStory and genImage could have utalized inheritance
